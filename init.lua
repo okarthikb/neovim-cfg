@@ -1,4 +1,3 @@
--- copied from lazy.nvim site
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
   local lazyrepo = "https://github.com/folke/lazy.nvim.git"
@@ -25,8 +24,6 @@ vim.keymap.set('n', 'c>', '<C-w>>')
 vim.keymap.set('n', 'c<', '<C-w><')
 vim.keymap.set('n', 'c=', '<C-w>=')
 
-vim.cmd('syntax on')
-
 vim.opt.colorcolumn = '120'
 vim.opt.number = true
 vim.opt.shiftwidth = 4
@@ -36,28 +33,36 @@ vim.opt.smartindent = true
 vim.opt.expandtab = true
 vim.opt.clipboard:append('unnamedplus')
 
+vim.cmd('syntax on')
 vim.cmd('highlight ColorColumn ctermbg=238')
 
 require("lazy").setup({
-  'itchyny/lightline.vim',
-  'ellisonleao/gruvbox.nvim',
-  {'nvim-treesitter/nvim-treesitter', build = ':TSUpdate'},
-  'nvim-lua/plenary.nvim',
-  {'nvim-telescope/telescope.nvim', tag = '0.1.8'},
+    'itchyny/lightline.vim',
+    'ellisonleao/gruvbox.nvim',
+    {
+        "nvim-treesitter/nvim-treesitter",
+        build = ":TSUpdate",
+        config = function() 
+            local configs = require("nvim-treesitter.configs")
+
+            configs.setup({
+                ensure_installed = { "lua", "python", "query", "markdown", "markdown_inline", "c", "vimdoc" },
+                sync_install = false,
+                highlight = { enable = true },
+                indent = { enable = true },
+                additional_vim_regex_highlighting = false,
+            })
+        end
+    },
+    {
+        "lervag/vimtex",
+        lazy = false,     -- we don't want to lazy load VimTeX
+        init = function()
+            vim.g.vimtex_view_method = "zathura"
+        end
+    }
 })
 
-vim.g.lightline = { colorscheme = 'solarized' }
-
 vim.opt.background = 'light'
+vim.g.lightline = { colorscheme = 'solarized' }
 vim.cmd('colorscheme gruvbox')
-
-require'nvim-treesitter.configs'.setup {
-    ensure_installed = { "lua", "python", "query", "markdown", "markdown_inline", "c", "vimdoc" },
-    highlight = {
-        enable = true,
-        additional_vim_regex_highlighting = false,
-    }
-}
-
--- inline Claude completion
-require('claude').setup()
