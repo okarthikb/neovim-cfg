@@ -14,6 +14,7 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
+-- keymaps
 vim.keymap.set('n', 'ch', '<C-w>h')
 vim.keymap.set('n', 'cj', '<C-w>j')
 vim.keymap.set('n', 'ck', '<C-w>k')
@@ -36,9 +37,10 @@ vim.opt.clipboard:append('unnamedplus')
 vim.cmd('syntax on')
 vim.cmd('highlight ColorColumn ctermbg=238')
 
+-- plugins
 require("lazy").setup({
-    'itchyny/lightline.vim',
-    'ellisonleao/gruvbox.nvim',
+    'itchyny/lightline.vim',  -- status bar
+    'ellisonleao/gruvbox.nvim',  -- gruvbox theme
     {
         "nvim-treesitter/nvim-treesitter",
         build = ":TSUpdate",
@@ -52,17 +54,12 @@ require("lazy").setup({
                 indent = { enable = true },
                 additional_vim_regex_highlighting = false,
             })
-        end
-    },
-    {
-        "lervag/vimtex",
-        lazy = false,     -- we don't want to lazy load VimTeX
-        init = function()
-            vim.g.vimtex_view_method = "zathura"
-        end
+        end  -- syntax highlighting
     }
 })
 
 vim.opt.background = 'light'
 vim.g.lightline = { colorscheme = 'solarized' }
 vim.cmd('colorscheme gruvbox')
+
+require("claude").setup()
